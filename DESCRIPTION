@@ -8,4 +8,4 @@ Maintainer: L Laniewski-Wollk <llaniewski@meil.pw.edu.pl>
 Description: Efficient implementation of an algebra of polynomial-times-Gaussian functions
 License: GPL
 Depends: gvector
-
+Suggests: testthat
