@@ -1,6 +1,6 @@
 gaussAlg - Algebra of functions for R
 
-##########
+=========
 
 Algebra of functions which looks like:
 
