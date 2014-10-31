@@ -3,7 +3,7 @@
 #include <math.h>
 
 
-#define DEBUG(x) x
+#define DEBUG(x)
  
 typedef int ULONG;
 
