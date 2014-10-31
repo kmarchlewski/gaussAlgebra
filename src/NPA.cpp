@@ -45,11 +45,11 @@ public:
 	void set_sigma(double v) { tab[d+n*(3+o)*D] = v; }
 	void set_mu(double v) { tab[d+D+n*(3+o)*D] = v; }
 	void set_c(int i, double v) { 
-		if (i>o) {printf("------------ Something is wrong! Beware! -----------\n");}
+		if (i>o) {DEBUG(printf("------------ Something is wrong! Beware! -----------\n");)}
 		else tab[d+D*(i+2)+n*(3+o)*D] = v;
 	}
 	void add_c(int i, double v) { 
-		if (i>o) {printf("------------ Something is wrong! Beware! -----------\n");}
+		if (i>o) {DEBUG(printf("------------ Something is wrong! Beware! -----------\n");)}
 		else tab[d+D*(i+2)+n*(3+o)*D] += v;
 	}
 };
