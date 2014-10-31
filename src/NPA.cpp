@@ -116,7 +116,7 @@ void mult_poly_mult(funmat & F, funmat & G, funmat & FG, double  wf, double  wg,
 					ret *= F.c(i+k);
 					ret *= G.c(j+p);
 					ret *= wfj * wgi;
-					printf("(%f,%f)+ %f\n",wfj,wgi,ret);					
+					DEBUG(printf("(%f,%f)+ %f\n",wfj,wgi,ret);)
 					sum += ret;
 					wfj *= wf;
 				}

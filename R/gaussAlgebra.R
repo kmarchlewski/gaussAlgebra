@@ -92,7 +92,6 @@ setMethod("calc", signature("gAlg","array"), function(object,x) calc.gAlg(object
 
 
 mult.gAlg <- function(A,B,mult=TRUE) {
-  print(mult)
   if (dim(A)[1] != dim(B)[1]) stop("dimension mismatch!");
   dims = c(dim(A)[1], dim(A)[2] - 3, dim(A)[3], dim(B)[2]-3, dim(B)[3], ifelse(mult,1,0))
   ndims = c(dims[1],3+dims[2]+dims[4],dims[3]*dims[5])
