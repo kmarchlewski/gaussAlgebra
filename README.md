@@ -21,5 +21,8 @@ matplot(x, cbind(
   calc(f + g  ,x), # ... sum ...
   calc(f %% g ,x)  # ... and convolution
 ), type="l", lty=1, xlab="x", ylab="y", main="Different operations")
-legend("topleft",c("f","g","fg (multiplicat)","f + g", "f * g (convolution)"),lty=1, col=1:5)
+legend("topleft",
+  c("f","g","fg (multiplicat)",
+    "f + g", "f * g (convolution)"),
+  lty=1, col=1:5)
 ```
