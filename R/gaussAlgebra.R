@@ -1,23 +1,48 @@
+#' Package for efficient analitical calculations on polynomial-times-gaussian functions
+#'
+#' @docType package
+#' @name gaussAlgebra-package
+#' @rdname gaussAlgebra-package
+#' @useDynLib gaussAlgebra
+NULL
 
-setClass("NP", representation(tab="array"))
-NP = function(tab) {
-  new("NP", tab=tab);
-}
+#' Class that represents a polynomial-times-gaussian function
+#' 
+#' @slot tab Array keeping all the information about the function (see below)
+#' @exportClass gAlg
+gAlg = setClass("gAlg", representation(tab="array"))
 
+#' Transforms polynomial coefficients into a 1D gAlg function
+#' 
+#' @param ... coefficients of a polynomial
+#' @export
 poly = function(...) {
   A = c(Inf,0,...)
   dim(A) = c(1,length(A),1)
-  NP(A)
+  gAlg(tab=A)
 }
 
-const.NP = function(a=1,d=1) {
+#' Generates a constant gAlg function
+#' 
+#' Creates a gAlg function representing: f(x1,x2,...xd) = a
+#' 
+#' @param a Value of the constant function
+#' @param d Dimension in which the function lives
+#' @export
+const.gAlg = function(a=1,d=1) {
   A = cbind(Inf,0,c(a,rep(1,d-1)))
   dim(A) = c(d,3,1)
-  NP(A)
+  gAlg(tab=A)
 }
 
-linear.NP = function(k,d=1) {
-  if ((k > d) || (k<1)) stop("linear.NP: a must: 1 <= k <= d")
+#' Generates a linear gAlg function
+#' 
+#' Creates a gAlg function representing: f(x1,x2,...xd) = xk
+#' 
+#' @param d Dimension in which the function lives
+#' @param k Index of the dimension in which the function is linear 
+linear.gAlg = function(k,d=1) {
+  if ((k > d) || (k<1)) stop("linear.gAlg: a must: 1 <= k <= d")
   A = rep(0, d*4)
   dim(A) = c(d,4,1)
   A[,1,]=Inf
@@ -25,19 +50,27 @@ linear.NP = function(k,d=1) {
   A[,3,]=1
   A[k,3,]=0	
   A[k,4,]=1	
-  NP(A)
+  gAlg(tab=A)
 }
 
 
-D = function(sd=1,mean=0) {
+#' Generates a Gauss gAlg function
+#' 
+#' Creates a gAlg function representing: f(x1,x2,...xd) = Normal distribution(sd,mean)
+#' 
+#' @param sd Vector of standard deviations (for each dimension)
+#' @param mean Vector of means (for each dimension)
+#' @export
+Gauss = function(sd=1,mean=0) {
   d = length(sd)
   if (length(mean) == 1) mean = rep(mean,d)
+  if (length(mean) != d) stop("Gauss: size of mean and sd is different")
   B = c(sd**2,mean,dnorm(0,sd=sd))
   dim(B) = c(d,3,1)
-  NP(B)
+  gAlg(tab=B)
 }
 
-calc.m <- function(A,x) {
+calc.gAlg <- function(A,x) {
   if (is.vector(x)) x = as.matrix(x)
   if (dim(A)[1] != dim(x)[2]) stop("dimension mismatch!");
   dims = c(dim(A)[1], dim(A)[2] - 3, dim(A)[3], dim(x)[1])
@@ -47,28 +80,41 @@ calc.m <- function(A,x) {
   ret
 }
 
-setMethod("calc", signature("NP","numeric"), function(object,x) calc.m(object@tab,x))
-setMethod("calc", signature("NP","array"), function(object,x) calc.m(object@tab,x))
+#' Evaluates the gAlg function in specific points
+#' 
+#' @param object gAlg function
+#' @param x points in which to evaluate the function
+#' @exportMethod calc
+setMethod("calc", signature("gAlg","numeric"), function(object,x) calc.gAlg(object@tab,x))
+setMethod("calc", signature("gAlg","array"), function(object,x) calc.gAlg(object@tab,x))
 
 
-mult.NP <- function(A,B,mult=TRUE) {
+mult.gAlg <- function(A,B,mult=TRUE) {
   print(mult)
   if (dim(A)[1] != dim(B)[1]) stop("dimension mismatch!");
   dims = c(dim(A)[1], dim(A)[2] - 3, dim(A)[3], dim(B)[2]-3, dim(B)[3], ifelse(mult,1,0))
   ndims = c(dims[1],3+dims[2]+dims[4],dims[3]*dims[5])
-  ret = .C("conv",as.integer(dims),A,B,fg=double(ndims[1]*ndims[2]*ndims[3]),DUP=F,NAOK=T)
+  ret = .C(
+    "conv",
+    as.integer(dims),
+    A,
+    B,
+    fg=double(ndims[1]*ndims[2]*ndims[3]),
+    DUP=FALSE,
+    NAOK=TRUE,
+    PACKAGE="gaussAlgebra"
+  )
   ret = ret$fg
   dim(ret)=ndims
-  NP(ret)
+  gAlg(tab=ret)
 }
 
-setMethod("%%", signature("NP","NP"), function(e1,e2) mult.NP(e1@tab,e2@tab,mult=FALSE) )
-setMethod("*",  signature("NP","NP"), function(e1,e2) mult.NP(e1@tab,e2@tab,mult=TRUE) )
+setMethod("%%", signature("gAlg","gAlg"), function(e1,e2) mult.gAlg(e1@tab,e2@tab,mult=FALSE) )
+setMethod("*",  signature("gAlg","gAlg"), function(e1,e2) mult.gAlg(e1@tab,e2@tab,mult=TRUE) )
 
-#setMethod("Ops", signature("NP","NP"), Ops.gvector)
+#setMethod("Ops", signature("gAlg","gAlg"), Ops.gvector)
 
-
-plus.NP <- function(A,B,plus=TRUE) {
+plus.gAlg <- function(A,B,plus=TRUE) {
   d = dim(A)[1]
   if (d != dim(B)[1]) stop("dimension mismatch!");
   o = max(dim(A)[2],dim(B)[2])
@@ -80,34 +126,34 @@ plus.NP <- function(A,B,plus=TRUE) {
   }
   AB[1:d,1:dim(A)[2],1:dim(A)[3]] = A
   AB[1:d,1:dim(B)[2],1:dim(B)[3] + dim(A)[3]] = B
-  NP(AB)
+  gAlg(tab=AB)
 }
 
-setMethod("+", signature("NP","NP"), function(e1,e2)  plus.NP(e1@tab,e2@tab,plus=TRUE ) )
-setMethod("-",  signature("NP","NP"), function(e1,e2) plus.NP(e1@tab,e2@tab,plus=FALSE) )
+setMethod("+", signature("gAlg","gAlg"), function(e1,e2)  plus.gAlg(e1@tab,e2@tab,plus=TRUE ) )
+setMethod("-",  signature("gAlg","gAlg"), function(e1,e2) plus.gAlg(e1@tab,e2@tab,plus=FALSE) )
 
-setMethod("lag", signature("NP"), function(x,dx,...) {
+setMethod("lag", signature("gAlg"), function(x,dx,...) {
   if (length(dx) != dim(x@tab)[1]) stop("dimension mismatch!");
   x@tab[,2,] = x@tab[,2,] + dx
   x
 })
 
-setMethod("Arith", signature("numeric","NP"), function(e1,e2) {
-  e1v = const.NP(e1,dim(e2@tab)[1])
+setMethod("Arith", signature("numeric","gAlg"), function(e1,e2) {
+  e1v = const.gAlg(e1,dim(e2@tab)[1])
   callGeneric(e1v,e2)
 })
-setMethod("Arith", signature("NP","numeric"), function(e1,e2) {
-  e2v = const.NP(e2,dim(e1@tab)[1])
+setMethod("Arith", signature("gAlg","numeric"), function(e1,e2) {
+  e2v = const.gAlg(e2,dim(e1@tab)[1])
   callGeneric(e1,e2v)
 })
 
-setMethod("*", signature("numeric","NP"), function(e1,e2) {
+setMethod("*", signature("numeric","gAlg"), function(e1,e2) {
   k = dim(e2@tab)[2]
   e2@tab[1,3:k,] = e2@tab[1,3:k,] * e1
   e2
 })
 
-setMethod("*", signature("NP","numeric"), function(e1,e2) {
+setMethod("*", signature("gAlg","numeric"), function(e1,e2) {
   k = dim(e1@tab)[2]
   e1@tab[1,3:k,] = e1@tab[1,3:k,] * e2
   e1

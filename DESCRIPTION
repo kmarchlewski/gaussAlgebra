@@ -1,11 +1,15 @@
 Package: gaussAlgebra
 Type: Package
-Title: Efficient implementation of an algebra of polynomial-times-Gaussian functions
+Title: Efficient implementation of an algebra of polynomial-times-Gaussian
+    functions
 Version: 1.0
 Date: 2014-10-30
 Author: L Laniewski-Wollk
 Maintainer: L Laniewski-Wollk <llaniewski@meil.pw.edu.pl>
-Description: Efficient implementation of an algebra of polynomial-times-Gaussian functions
+Description: Efficient implementation of an algebra of
+    polynomial-times-Gaussian functions
 License: GPL
-Depends: gvector
-Suggests: testthat
+Depends:
+    gvector
+Suggests:
+    testthat
