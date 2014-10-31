@@ -40,7 +40,8 @@ const.gAlg = function(a=1,d=1) {
 #' Creates a gAlg function representing: f(x1,x2,...xd) = xk
 #' 
 #' @param d Dimension in which the function lives
-#' @param k Index of the dimension in which the function is linear 
+#' @param k Index of the dimension in which the function is linear
+#' @export
 linear.gAlg = function(k,d=1) {
   if ((k > d) || (k<1)) stop("linear.gAlg: a must: 1 <= k <= d")
   A = rep(0, d*4)
@@ -72,10 +73,11 @@ Gauss = function(sd=1,mean=0) {
 
 calc.gAlg <- function(A,x) {
   if (is.vector(x)) x = as.matrix(x)
+  if (! is.double(x)) if (is.numeric(x)) x[] = as.double(x)
   if (dim(A)[1] != dim(x)[2]) stop("dimension mismatch!");
   dims = c(dim(A)[1], dim(A)[2] - 3, dim(A)[3], dim(x)[1])
   ndims = dim(x)[1]
-  ret = .C("calc",as.integer(dims),A,x,ret=double(ndims),DUP=F,NAOK=T)
+  ret = .C("calc",as.integer(dims),A,x,ret=double(ndims),DUP=F,NAOK=T,PACKAGE="gaussAlgebra")
   ret = ret$ret
   ret
 }

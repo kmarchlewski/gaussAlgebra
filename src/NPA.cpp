@@ -213,6 +213,7 @@ void calc(int * sizes, double * f, double * x, double * ret) {
 				double px = x[i+d*xn];
 				double pxk = 1;
 				px -= F.mu();
+        
 				double ret = 0;
 				for (int k = 0; k <= fo; k++) {
 					ret += pxk * F.c(k);
@@ -224,6 +225,7 @@ void calc(int * sizes, double * f, double * x, double * ret) {
 			sum += prod;
 		}
 		ret[i] = sum;
+    DEBUG(printf("%d:%f\n",i,ret[i]));
 	}
 }
 

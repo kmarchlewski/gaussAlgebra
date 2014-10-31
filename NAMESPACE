@@ -2,6 +2,7 @@
 
 export(Gauss)
 export(const.gAlg)
+export(linear.gAlg)
 export(poly)
 exportClasses(gAlg)
 exportMethods(calc)
