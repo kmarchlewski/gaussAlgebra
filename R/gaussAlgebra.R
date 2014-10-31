@@ -159,3 +159,41 @@ setMethod("*", signature("gAlg","numeric"), function(e1,e2) {
   e1@tab[1,3:k,] = e1@tab[1,3:k,] * e2
   e1
 })
+
+as.character.gAlg = function(x,...)
+{
+  km = dim(x@tab)[2]-2
+  d  = dim(x@tab)[1]
+  n  = dim(x@tab)[3]
+  a = paste0("x",1:d)
+  r = outer(a,1:km-1,function(x,y) paste0(x,"^",y,"*"))
+  r[,1] = ""
+  if (km > 1) r[,2] = paste0(a,"*")
+  
+  ret = sapply(1:n,function(k) {
+    ret = sapply(1:d,function(i) {
+      p = x@tab[i,1:km+2,k]
+      nr = paste0(r[i,],p)
+      ret = paste(nr[p != 0],collapse=" + ")
+      if (is.finite(x@tab[i,1,k])) {
+        ret = paste0("(",ret,")*exp(-",a[i],"^2/(2*",x@tab[i,1,k],"))")
+      }
+      if (x@tab[i,2,k] != 0) {
+        ret = paste0(ret," [ origin: ",a[i],"=",x@tab[i,2,k]," ]")
+      }
+      ret
+    })
+    paste0(ret,collapse="*\n")
+  })
+  paste0(ret,collapse="\n+++++++++\n")
+}
+
+#' Prints a gAlg function in a nice readable form
+#' 
+#' @export
+print.gAlg = function(object) {
+  cat(as.character(object))
+}
+
+#' @export
+setMethod("show", "gAlg", print.gAlg)
