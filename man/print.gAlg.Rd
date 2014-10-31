@@ -3,7 +3,10 @@
 \alias{print.gAlg}
 \title{Prints a gAlg function in a nice readable form}
 \usage{
-\method{print}{gAlg}(object)
+\method{print}{gAlg}(x, ...)
+}
+\arguments{
+\item{x}{the gAlg function to be printed}
 }
 \description{
 Prints a gAlg function in a nice readable form

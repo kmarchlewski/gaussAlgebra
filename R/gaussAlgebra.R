@@ -190,10 +190,11 @@ as.character.gAlg = function(x,...)
 
 #' Prints a gAlg function in a nice readable form
 #' 
+#' @param x the gAlg function to be printed
 #' @export
-print.gAlg = function(object) {
-  cat(as.character(object))
+print.gAlg = function(x, ...) {
+  cat(as.character(x, ...))
 }
 
 #' @export
-setMethod("show", "gAlg", print.gAlg)
+setMethod("show", "gAlg", function(object) print.gAlg(object))
