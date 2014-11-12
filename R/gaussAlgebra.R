@@ -40,7 +40,7 @@ const.gAlg = function(a=1,d=1) {
 #' Creates a gAlg function representing: f(x1,x2,...xd) = xk
 #' 
 #' @param d Dimension in which the function lives
-#' @param k Index of the dimension in which the function is linear
+#' @param k Index of the dimension in which the function is linear.
 #' @export
 linear.gAlg = function(k,d=1) {
   if ((k > d) || (k<1)) stop("linear.gAlg: a must: 1 <= k <= d")
