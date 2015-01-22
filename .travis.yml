@@ -15,6 +15,12 @@ install:
   - ./travis-tool.sh install_deps
 script: ./travis-tool.sh run_tests
 
+after_success:
+  - ls
+  - git clone .git gaussAlgebra
+  - R INSTALL gaussAlgebra
+  - ls
+
 after_failure:
   - ./travis-tool.sh dump_logs
 
