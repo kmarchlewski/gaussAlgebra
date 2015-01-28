@@ -18,7 +18,7 @@ script: ./travis-tool.sh run_tests
 after_success:
   - ls
   - git clone .git gaussAlgebra
-  - R INSTALL gaussAlgebra
+  - R CMD INSTALL --build gaussAlgebra
   - ls
 
 after_failure:
