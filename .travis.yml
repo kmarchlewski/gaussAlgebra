@@ -28,3 +28,11 @@ notifications:
   email:
     on_success: change
     on_failure: change
+
+deploy:
+  provider: releases
+  api_key: "b47bd3936e824a0e8aaa0e31dbf0d85797e61914"
+  file: "gaussAlgebra_1.0.tar.gz"
+  skip_cleanup: true
+  on:
+    tags: true
