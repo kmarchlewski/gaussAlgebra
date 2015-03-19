@@ -193,7 +193,7 @@ as.character.gAlg = function(x,...)
 #' @param x the gAlg function to be printed
 #' @export
 print.gAlg = function(x, ...) {
-  cat(as.character(x, ...))
+  cat(paste0(as.character(x, ...),"\n"))
 }
 
 #' @export
