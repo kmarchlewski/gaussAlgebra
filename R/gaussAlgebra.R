@@ -123,7 +123,7 @@ plus.gAlg <- function(A,B,plus=TRUE) {
   AB = rep(0,prod(dims))
   dim(AB) = dims
   if (!plus) {
-    B[,3:dim(B)[2],] = -B[,3:dim(B)[2],]
+    B[1,3:dim(B)[2],] = -B[1,3:dim(B)[2],]
   }
   AB[1:d,1:dim(A)[2],1:dim(A)[3]] = A
   AB[1:d,1:dim(B)[2],1:dim(B)[3] + dim(A)[3]] = B

@@ -81,3 +81,22 @@ test_that("Complex", {
   expect_equal(calc(w-v,x),calc(w,x)-calc(v,x))  
   expect_equal(calc(w*v,x),calc(w,x)*calc(v,x))  
 })
+
+test_that("Even dim op", {
+  d = 30
+  x = linear.gAlg(1,d)
+  l = const.gAlg(3.14,d)
+  w = x*x*x+3*x*x-2*x+l
+  v = 7*x*x+x
+  expect_that(w, is_a("gAlg"))
+  expect_that(v, is_a("gAlg"))
+  l = 3.14
+  x = seq(0,1,len=100)
+  X = cbind(x,matrix(runif(100*(d-1)),100,d-1))
+  expect_equal(calc(w,X),x*x*x+3*x*x-2*x+l)  
+  expect_equal(calc(v,X),7*x*x+x)
+  expect_equal(calc(w+v,X),calc(w,X)+calc(v,X))  
+  expect_equal(calc(w-v,X),calc(w,X)-calc(v,X))  
+  expect_equal(calc(w*v,X),calc(w,X)*calc(v,X))  
+})
+
