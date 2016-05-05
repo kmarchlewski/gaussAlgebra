@@ -205,7 +205,7 @@ void calc(int * sizes, double * f, double * x, double * ret) {
 	DEBUG(printf("f: polynomial order %d. number of functions %d\n",fo,fn);)
 	for (int i = 0; i < xn; i++) {
 		double sum=0;
-    //#pragma omp parallel for reduction(+:sum) firstprivate(F)
+    #pragma omp parallel for reduction(+:sum) firstprivate(F)
 	  for (int ff = 0; ff < fn; ff++) {
 			double prod=1;
 			F.set_n(ff);
