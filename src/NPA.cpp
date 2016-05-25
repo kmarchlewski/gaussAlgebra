@@ -1,7 +1,7 @@
 #include <stdio.h>
 #include <limits.h>
 #include <math.h>
-
+#include <omp.h>
 
 #define DEBUG(x)
  
@@ -196,10 +196,33 @@ void conv(int * sizes, double * f, double * g, double * fg) {
 	
 }
 
-
+int threads_max;
+  
+void init_threads_max() {
+  printf("Checking maximum number of threads.\n");
+  threads_max = omp_get_max_threads();
+  printf("threads_max: %d\n", threads_max);
+}
+  
+  
 void calc(int * sizes, double * f, double * x, double * ret) {
 	int D = sizes[0], fo = sizes[1], fn=sizes[2];
 	int xn = sizes[3];
+	int threads_to_use;
+	int fn_max, threads_fn;
+
+	fn_max = 1000;
+	threads_fn = (int) ceil(fn / ((double) fn_max));
+	
+	if (threads_fn > threads_max) {
+	  threads_to_use = threads_max;
+	} else {
+	  threads_to_use = threads_fn;
+	}
+	// printf("Function number: %d\n", fn);
+  // printf("Threads used: %d\n", threads_to_use);
+	omp_set_num_threads(threads_to_use);
+	
 	funmat F(f,D,fo,fn);
 	DEBUG(printf("Dimension: %d\n",D);)
 	DEBUG(printf("f: polynomial order %d. number of functions %d\n",fo,fn);)
