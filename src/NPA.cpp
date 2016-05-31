@@ -208,10 +208,9 @@ void init_threads_max() {
 void calc(int * sizes, double * f, double * x, double * ret) {
 	int D = sizes[0], fo = sizes[1], fn=sizes[2];
 	int xn = sizes[3];
-	int threads_to_use;
-	int fn_max, threads_fn;
-
-	fn_max = 1000;
+	int threads_to_use, threads_fn;
+	const int fn_max = 1000;
+	
 	threads_fn = (int) ceil(fn / ((double) fn_max));
 	
 	if (threads_fn > threads_max) {
