@@ -219,8 +219,7 @@ void calc(int * sizes, double * f, double * x, double * ret) {
 	} else {
 	  threads_to_use = threads_fn;
 	}
-	// printf("Function number: %d\n", fn);
-  // printf("Threads used: %d\n", threads_to_use);
+
 	omp_set_num_threads(threads_to_use);
 	
 	funmat F(f,D,fo,fn);
