@@ -6,6 +6,10 @@
 #' @useDynLib gaussAlgebra
 NULL
 
+.onLoad = function(...) {
+  .C("init_threads_max")
+}
+
 #' Class that represents a polynomial-times-gaussian function
 #' 
 #' @slot tab Array keeping all the information about the function (see below)
@@ -71,13 +75,14 @@ Gauss = function(sd=1,mean=0) {
   gAlg(tab=B)
 }
 
-calc.gAlg <- function(A,x) {
+calc.gAlg <- function(A, x) {
   if (is.vector(x)) x = as.matrix(x)
   if (! is.double(x)) if (is.numeric(x)) x[] = as.double(x)
   if (dim(A)[1] != dim(x)[2]) stop("dimension mismatch!");
   dims = c(dim(A)[1], dim(A)[2] - 3, dim(A)[3], dim(x)[1])
   ndims = dim(x)[1]
-  ret = .C("calc",as.integer(dims),A,x,ret=double(ndims),DUP=F,NAOK=T,PACKAGE="gaussAlgebra")
+  ret = .C("calc", as.integer(dims), A, x, ret = double(ndims),
+           NAOK = TRUE, DUP = FALSE, PACKAGE = "gaussAlgebra")
   ret = ret$ret
   ret
 }
